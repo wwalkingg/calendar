@@ -78,7 +78,6 @@ fun DayPicker(
             val i = it - offset
             println(firstDayOfMonth.plus(DatePeriod(days = i)))
             item {
-                val _date =
                     object : DayPickerScope {
                         override val isSelected: Boolean
                             get() = state.date == date
@@ -98,8 +97,8 @@ fun DayPicker(
                         var maxBorder by remember {
                             mutableStateOf(80)
                         }
-                        var maxRadius = (maxBorder / LocalDensity.current.density) * sqrt(2f)
-                        var offset by remember {
+                        val maxRadius = (maxBorder / LocalDensity.current.density) * sqrt(2f)
+                        var _offset by remember {
                             mutableStateOf(Offset.Zero)
                         }
                         val radius by animateFloatAsState(
@@ -111,9 +110,6 @@ fun DayPicker(
                         )
                         val verticalPadding by animateDpAsState(
                             (maxBorder / LocalDensity.current.density / 14).dp
-                        )
-                        val contentColor by animateColorAsState(
-                            if (isSelected) Color.White else Color.Black
                         )
 
                         Column(
@@ -133,10 +129,10 @@ fun DayPicker(
                                     if(isHover){
                                         drawRect(color = Color.Black.copy(0.1f))
                                     }
-                                    drawCircle(primaryColor, radius = radius, center = offset)
+                                    drawCircle(primaryColor, radius = radius, center = _offset)
                                 }
                                 .onPointerEvent(eventType = PointerEventType.Press, onEvent = { event ->
-                                    offset = event.changes[0].position
+                                    _offset = event.changes[0].position
                                 })
                                 .clickable(
                                     interactionSource = remember { MutableInteractionSource() },
